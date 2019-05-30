@@ -17,11 +17,10 @@ class SMALModel(Module):
         
     self.J_regressor = torch.from_numpy(np.array(params['J_regressor']).T).type(torch.float32)
     
-    # nose, left chin, right ear, left ear
+    # nose, chin, right ear, left ear
     extra_joint_ids = [1863, 26, 530, 2495]
     extra_joints = torch.zeros(len(extra_joint_ids), self.J_regressor.shape[1])
-    print (extra_joints.shape)
-    
+   
     extra_joints[range(len(extra_joint_ids)), extra_joint_ids] = 1
     self.J_regressor = torch.cat([self.J_regressor, extra_joints], dim = 0)  # right_ear
 
@@ -205,6 +204,10 @@ class SMALModel(Module):
 
     result = v + torch.reshape(trans, (batch_num, 1, 3))
     joints = torch.tensordot(result, self.J_regressor.transpose(1, 0), dims=([1], [0])).transpose(1, 2)
+
+    if normalize:
+      result = result - joints[:, [6]]
+      joints = joints - joints[:, [6]]
 
     return result, joints
 
