@@ -116,7 +116,7 @@ class SMALModel(Module):
       for f in self.faces + 1:
         fp.write('f %d %d %d\n' % (f[0], f[1], f[2]))
 
-  def forward(self, betas, pose, trans, simplify=False):
+  def forward(self, betas, pose, trans, simplify=False, normalize=False):
     
     """
           Construct a compute graph that takes in parameters and outputs a tensor as
